@@ -2,8 +2,10 @@ import React from "react";
 import styled from "styled-components";
 import { IoClose, IoSearch } from "react-icons/io5";
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useClickOutside } from "react-click-outside-hook";
+import { useRef } from "react";
+import PuffLoader from "react-spinners/PuffLoader";
 
 const SearchBarContainer = styled(motion.div)`
   display: flex;
@@ -54,7 +56,7 @@ const SearchIcon = styled.span`
   vertical-align: middle;
 `;
 
-const CloseIcon = styled.span`
+const CloseIcon = styled(motion.span)`
   color: #bebebe;
   font-size: 23px;
   padding-right: 25px;
@@ -64,6 +66,30 @@ const CloseIcon = styled.span`
   &:hover {
     color: #dfdfdf;
   }
+`;
+
+const LineSeparator = styled.span`
+  display: flex;
+  min-width: 100%;
+  min-height: 2px;
+  background-color: #d8d8d878;
+`;
+
+const SearchContent = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
+  overflow-y: auto;
+`;
+
+const LoadingWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const containerVariants = {
@@ -83,7 +109,8 @@ const containerTransition = {
 
 const MyJumbotron = () => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [ref, isClickedOutside] = useClickOutside();
+  const [parentRef, isClickedOutside] = useClickOutside();
+  const inputRef = useRef();
 
   const expandContainer = () => {
     setIsExpanded(true);
@@ -91,6 +118,7 @@ const MyJumbotron = () => {
 
   const collapseContainer = () => {
     setIsExpanded(false);
+    if (inputRef.current) inputRef.current.value = "";
   };
 
   useEffect(() => {
@@ -98,12 +126,12 @@ const MyJumbotron = () => {
   }, [isClickedOutside]);
 
   return (
-    <div>
+    <div className="jumbotron">
       <SearchBarContainer
         animate={isExpanded ? "expanded" : "collapsed"}
         variants={containerVariants}
         transition={containerTransition}
-        ref={ref}
+        ref={parentRef}
       >
         <SearchInputContainer>
           <SearchIcon>
@@ -112,11 +140,31 @@ const MyJumbotron = () => {
           <SearchInput
             placeholder="Search for recipes"
             onFocus={expandContainer}
+            ref={inputRef}
           />
-          <CloseIcon onClick={collapseContainer}>
-            <IoClose />
-          </CloseIcon>
+          <AnimatePresence>
+            {isExpanded && (
+              <CloseIcon
+                key="close-icon"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={collapseContainer}
+              >
+                <IoClose />
+              </CloseIcon>
+            )}
+          </AnimatePresence>
         </SearchInputContainer>
+        {isExpanded && <LineSeparator />}
+        {isExpanded && (
+          <SearchContent>
+            <LoadingWrapper>
+              <PuffLoader loading color="lavender" size={30} />
+            </LoadingWrapper>
+          </SearchContent>
+        )}
       </SearchBarContainer>
     </div>
   );
