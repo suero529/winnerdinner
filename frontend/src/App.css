@@ -1,4 +1,4 @@
-.navbar-box {
+.navbar {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -11,4 +11,24 @@
   background-size: cover;
   height: 396px;
   width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.meal-card-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 18rem;
+  height: auto;
+  border: 1px solid lavender;
+  border-radius: 8px;
+  padding: 30px;
+  margin: 30px;
+}
+
+.recipe-image {
+  width: 18rem;
+  display: flex;
+  justify-content: center;
 }

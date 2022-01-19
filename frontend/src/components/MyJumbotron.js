@@ -10,8 +10,8 @@ import PuffLoader from "react-spinners/PuffLoader";
 const SearchBarContainer = styled(motion.div)`
   display: flex;
   flex-direction: column;
-  width: 34em;
-  height: 3.8em;
+  width: 20em;
+  height: 2em;
   background-color: #fff;
   border-radius: 6px;
   box-shadow: 0px 2px 12px 3px rgba(0, 0, 0, 0.14);
@@ -19,7 +19,7 @@ const SearchBarContainer = styled(motion.div)`
 
 const SearchInputContainer = styled.div`
   width: 100%;
-  min-height: 4em;
+  min-height: 2em;
   display: flex;
   align-items: center;
   position: relative;
@@ -31,7 +31,7 @@ const SearchInput = styled.input`
   height: 100%;
   outline: none;
   border: none;
-  font-size: 20px;
+  font-size: 17px;
   color: #12112e;
   font-weight: 500;
   border-radius: 6px;
@@ -50,7 +50,7 @@ const SearchInput = styled.input`
 
 const SearchIcon = styled.span`
   color: #bebebe;
-  font-size: 27px;
+  font-size: 17px;
   margin-right: 10px;
   margin-top: 6px;
   vertical-align: middle;
@@ -58,7 +58,7 @@ const SearchIcon = styled.span`
 
 const CloseIcon = styled(motion.span)`
   color: #bebebe;
-  font-size: 23px;
+  font-size: 17px;
   padding-right: 25px;
   vertical-align: middle;
   transition: all 200ms ease-in-out;
@@ -97,7 +97,7 @@ const containerVariants = {
     height: "20em",
   },
   collapsed: {
-    height: "3.8em",
+    height: "2.5em",
   },
 };
 
