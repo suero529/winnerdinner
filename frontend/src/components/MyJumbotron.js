@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useClickOutside } from "react-click-outside-hook";
 import { useRef } from "react";
 import PuffLoader from "react-spinners/PuffLoader";
+import { useDebounce } from "../hooks/debounceHook";
 
 const SearchBarContainer = styled(motion.div)`
   display: flex;
@@ -107,10 +108,16 @@ const containerTransition = {
   stiffness: 150,
 };
 
-const MyJumbotron = () => {
+const MyJumbotron = (props) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [parentRef, isClickedOutside] = useClickOutside();
   const inputRef = useRef();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const changeHandler = (e) => {
+    e.preventDefault();
+    setSearchQuery(e.target.value);
+  };
 
   const expandContainer = () => {
     setIsExpanded(true);
@@ -118,12 +125,16 @@ const MyJumbotron = () => {
 
   const collapseContainer = () => {
     setIsExpanded(false);
+    setSearchQuery("");
     if (inputRef.current) inputRef.current.value = "";
   };
 
   useEffect(() => {
     if (isClickedOutside) collapseContainer();
   }, [isClickedOutside]);
+
+  const searchRecipe = () => {};
+  useDebounce(searchQuery, 500, searchRecipe);
 
   return (
     <div className="jumbotron">
@@ -141,6 +152,8 @@ const MyJumbotron = () => {
             placeholder="Search for recipes"
             onFocus={expandContainer}
             ref={inputRef}
+            value={searchQuery}
+            onChange={changeHandler}
           />
           <AnimatePresence>
             {isExpanded && (
