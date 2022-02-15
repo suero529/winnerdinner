@@ -7,6 +7,7 @@ import { useClickOutside } from "react-click-outside-hook";
 import { useRef } from "react";
 import PuffLoader from "react-spinners/PuffLoader";
 import { useDebounce } from "../hooks/debounceHook";
+import axios from "axios";
 
 const SearchBarContainer = styled(motion.div)`
   display: flex;
@@ -113,6 +114,7 @@ const MyJumbotron = (props) => {
   const [parentRef, isClickedOutside] = useClickOutside();
   const inputRef = useRef();
   const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const changeHandler = (e) => {
     e.preventDefault();
@@ -133,7 +135,23 @@ const MyJumbotron = (props) => {
     if (isClickedOutside) collapseContainer();
   }, [isClickedOutside]);
 
-  const searchRecipe = () => {};
+  const prepareSearchQuery = () => {
+    const url = `https://www.themealdb.com/api/json/v1/1/search.php?f=a`;
+    return encodeURI(url);
+  };
+
+  const searchRecipe = async () => {
+    if (!searchQuery || searchQuery.trim() === "") return;
+    setLoading(true);
+    const url = prepareSearchQuery(searchQuery);
+    const response = await axios.get(url).catch((err) => {
+      console.log("Error:", err);
+    });
+    if (response) {
+      console.log("Response: ", response.data);
+    }
+  };
+
   useDebounce(searchQuery, 500, searchRecipe);
 
   return (
