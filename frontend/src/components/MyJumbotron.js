@@ -8,6 +8,7 @@ import { useRef } from "react";
 import PuffLoader from "react-spinners/PuffLoader";
 import { useDebounce } from "../hooks/debounceHook";
 import axios from "axios";
+import { RecipeinSearch } from "./RecipeInSearch";
 
 const SearchBarContainer = styled(motion.div)`
   display: flex;
@@ -115,6 +116,9 @@ const MyJumbotron = (props) => {
   const inputRef = useRef();
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
+  const [recipes, setRecipes] = useState([]);
+
+  const isEmpty = !recipes || recipes.length === 0;
 
   const changeHandler = (e) => {
     e.preventDefault();
@@ -128,6 +132,7 @@ const MyJumbotron = (props) => {
   const collapseContainer = () => {
     setIsExpanded(false);
     setSearchQuery("");
+    setLoading(false);
     if (inputRef.current) inputRef.current.value = "";
   };
 
@@ -149,7 +154,9 @@ const MyJumbotron = (props) => {
     });
     if (response) {
       console.log("Response: ", response.data);
+      setRecipes(response.data);
     }
+    setLoading(false);
   };
 
   useDebounce(searchQuery, 500, searchRecipe);
@@ -191,9 +198,20 @@ const MyJumbotron = (props) => {
         {isExpanded && <LineSeparator />}
         {isExpanded && (
           <SearchContent>
-            <LoadingWrapper>
-              <PuffLoader loading color="lavender" size={30} />
-            </LoadingWrapper>
+            {loading && (
+              <LoadingWrapper>
+                <PuffLoader loading color="lavender" size={30} />
+              </LoadingWrapper>
+            )}
+            {!loading && !isEmpty && (
+              <>
+                {Object.keys(recipes).map((recipe) => {
+                  return (
+                    <RecipeinSearch thumbnailSrc={recipes[recipe].meals} />
+                  );
+                })}
+              </>
+            )}
           </SearchContent>
         )}
       </SearchBarContainer>
